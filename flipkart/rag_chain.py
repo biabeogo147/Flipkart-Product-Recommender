@@ -1,11 +1,12 @@
 from langchain_groq import ChatGroq
-from langchain.chains import create_history_aware_retriever,create_retrieval_chain
+from langchain.chains import create_history_aware_retriever, create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.prompts import ChatPromptTemplate,MessagesPlaceholder
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_core.chat_history import BaseChatMessageHistory
 from flipkart.config import Config
+
 
 class RAGChainBuilder:
     def __init__(self,vector_store):
@@ -35,15 +36,15 @@ class RAGChainBuilder:
         ])
 
         history_aware_retriever = create_history_aware_retriever(
-            self.model , retriever , context_prompt
+            self.model, retriever, context_prompt
         )
 
         question_answer_chain = create_stuff_documents_chain(
-            self.model , qa_prompt
+            self.model, qa_prompt
         )
 
         rag_chain = create_retrieval_chain(
-            history_aware_retriever,question_answer_chain
+            history_aware_retriever, question_answer_chain
         )
 
         return RunnableWithMessageHistory(
@@ -53,6 +54,3 @@ class RAGChainBuilder:
             history_messages_key="chat_history",
             output_messages_key="answer"
         )
-
-
-

@@ -3,10 +3,15 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-class Config:
-    ASTRA_DB_API_ENDPOINT = os.getenv("ASTRA_DB_API_ENDPOINT")
-    ASTRA_DB_APPLICATION_TOKEN = os.getenv("ASTRA_DB_APPLICATION_TOKEN")
-    ASTRA_DB_KEYSPACE = os.getenv("ASTRA_DB_KEYSPACE")
-    GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-    EMBEDDING_MODEL = "BAAI/bge-base-en-v1.5"
-    RAG_MODEL = "llama-3.1-8b-instant"
+ASTRA_DB_API_ENDPOINT = os.getenv("ASTRA_DB_API_ENDPOINT")
+ASTRA_DB_APPLICATION_TOKEN = os.getenv("ASTRA_DB_APPLICATION_TOKEN")
+ASTRA_DB_KEYSPACE = os.getenv("ASTRA_DB_KEYSPACE")
+COLLECTION_NAME = os.getenv("COLLECTION_NAME")
+
+MODEL_NAME = os.getenv("MODEL_NAME")
+EMBEDDING_MODEL_NAME = os.getenv("EMBEDDING_MODEL_NAME", "sentence-transformers/all-MiniLM-L6-v2")
+
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+HUGGINGFACEHUB_API_TOKEN = os.getenv("HUGGINGFACEHUB_API_TOKEN")
+
+METRICS_PORT = int(os.getenv("METRICS_PORT", 8000))

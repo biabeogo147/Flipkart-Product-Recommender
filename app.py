@@ -2,18 +2,16 @@ from flask import render_template,Flask,request,Response
 from prometheus_client import Counter,generate_latest
 from flipkart.data_ingestion import DataIngestor
 from flipkart.rag_chain import RAGChainBuilder
+from flipkart.config import *
 
-from dotenv import load_dotenv
 load_dotenv()
 
 REQUEST_COUNT = Counter("http_requests_total" , "Total HTTP Request")
 
 def create_app():
-
     app = Flask(__name__)
-
     vector_store = DataIngestor().ingest(load_existing=True)
-    rag_chain = RAGChainBuilder(vector_store).build_chain()
+    rag_chain = RAGChainBuilder(vector_store, model_name=MODEL_NAME).build_chain()
 
     @app.route("/")
     def index():
@@ -22,15 +20,13 @@ def create_app():
     
     @app.route("/get" , methods=["POST"])
     def get_response():
-
+        print(request.form)
         user_input = request.form["msg"]
-
-        reponse = rag_chain.invoke(
+        response = rag_chain.invoke(
             {"input" : user_input},
             config={"configurable" : {"session_id" : "user-session"}}
         )["answer"]
-
-        return reponse
+        return response
     
     @app.route("/metrics")
     def metrics():
@@ -40,4 +36,4 @@ def create_app():
 
 if __name__=="__main__":
     app = create_app()
-    app.run(host="0.0.0.0",port=5000,debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True, use_reloader=False)

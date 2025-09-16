@@ -1,20 +1,20 @@
-from langchain_groq import ChatGroq
+from flipkart.config import *
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.chains import create_history_aware_retriever, create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.prompts import ChatPromptTemplate,MessagesPlaceholder
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_core.chat_history import BaseChatMessageHistory
-from flipkart.config import Config
 
 
 class RAGChainBuilder:
-    def __init__(self,vector_store):
+    def __init__(self, vector_store, model_name: str = MODEL_NAME, google_api_key: str = GOOGLE_API_KEY):
         self.vector_store=vector_store
-        self.model = ChatGroq(model=Config.RAG_MODEL , temperature=0.5)
+        self.llm = ChatGoogleGenerativeAI(model=model_name, google_api_key=google_api_key)
         self.history_store={}
 
-    def _get_history(self,session_id:str) -> BaseChatMessageHistory:
+    def _get_history(self, session_id: str) -> BaseChatMessageHistory:
         if session_id not in self.history_store:
             self.history_store[session_id] = ChatMessageHistory()
         return self.history_store[session_id]
@@ -36,11 +36,11 @@ class RAGChainBuilder:
         ])
 
         history_aware_retriever = create_history_aware_retriever(
-            self.model, retriever, context_prompt
+            self.llm, retriever, context_prompt
         )
 
         question_answer_chain = create_stuff_documents_chain(
-            self.model, qa_prompt
+            self.llm, qa_prompt
         )
 
         rag_chain = create_retrieval_chain(

@@ -1,15 +1,19 @@
-I used source code from https://github.com/data-guru0/ANIME-RECOMMENDER-SYSTEM-LLMOPS and modified it based on my needs.
+I used source code from https://github.com/data-guru0/FLIPKART-PRODUCT-RECOMMENDER-SYSTEM and modified it based on my needs.
 
 Create the secret, build the Docker image and deploy the application.
 ```bash
-bash create-secret.sh
-docker build -t anime-recommender-app:latest .
-kubectl apply -f llmops-k8s.yaml
+kubectl create secret generic name-secrets \
+  --from-literal=GOOGLE_API_KEY="" \
+  --from-literal=HUGGINGFACEHUB_API_TOKEN="" \
+  --from-literal=ASTRA_DB_APPLICATION_TOKEN="" \
+  --from-literal=ASTRA_DB_API_ENDPOINT="" \
+  --dry-run=client -o yaml | kubectl apply -f -
+kubectl apply -f app-deployment.yaml
 ```
 
 If you need to delete the deployment, use:
 ```bash
-kubectl delete -f llmops-k8s.yaml
+kubectl delete -f app-deployment.yaml
 ```
 
 Check the created secret:

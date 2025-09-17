@@ -1,0 +1,29 @@
+# -----------------------------
+# ServiceMonitor (Prometheus Operator) - CRD (Custom Resource Definition)
+# Allow Prometheus scrape /metrics from flipkart-recommender-service service.
+# Requires kube-prometheus-stack installed in the cluster.
+# App metrics
+# -----------------------------
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+
+metadata:
+  namespace: monitoring
+  name: flipkart-recommender-servicemonitor
+  labels:
+    # Must be in the same namespace as kube-prometheus-stack
+    release: monitoring
+
+spec:
+  # App Namespace
+  namespaceSelector:
+    matchNames:
+      - flipkart-recommender
+  selector:
+    matchLabels:
+      app: flipkart-recommender-service
+  endpoints:
+    - port: app  # Port defined in flipkart-recommender-service Service
+      path: /metrics
+      interval: 15s
+      scrapeTimeout: 10s

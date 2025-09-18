@@ -1,5 +1,5 @@
 # -----------------------------
-# Deployment: Run app + expose port 8501 (HTTP) and 8000 (Metrics)
+# Deployment: Run app + expose port 8000 (HTTP)
 # -----------------------------
 apiVersion: apps/v1
 kind: Deployment
